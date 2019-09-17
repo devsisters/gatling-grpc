@@ -1,10 +1,5 @@
 name := "gatling-grpc"
 
-organization := "com.github.phisgr"
-version := "0.5.0"
-
-scalaVersion := "2.12.6"
-
 val gatlingVersion = "3.2.0"
 
 scalacOptions ++= Seq(
@@ -29,21 +24,3 @@ libraryDependencies ++= Seq(
   "io.gatling" % "gatling-test-framework" % gatlingVersion % "test"
 )
 enablePlugins(GatlingPlugin)
-
-import xerial.sbt.Sonatype._
-publishTo := SonatypeKeys.sonatypePublishTo.value
-publishMavenStyle := true
-
-licenses := Seq("APL2" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt"))
-sonatypeProjectHosting := Some(GitHubHosting("phiSgr", "gatling-grpc", "phisgr@gmail.com"))
-
-lazy val root = project in file(".")
-
-lazy val bench = (project in file("bench"))
-  .dependsOn(root)
-  .enablePlugins(JmhPlugin)
-  .settings(
-    PB.targets in Compile := Seq(
-      scalapb.gen() -> (sourceManaged in Compile).value
-    )
-  )
