@@ -1,5 +1,7 @@
 package com.github.phisgr.gatling.grpc
 
+import java.util.concurrent.TimeUnit
+
 import com.github.phisgr.gatling.grpc.action.GrpcCallActionBuilder
 import com.github.phisgr.gatling.grpc.protocol.GrpcProtocol
 import io.gatling.commons.NotNothing
@@ -31,7 +33,7 @@ trait GrpcDsl {
   class CallWithMethod[Req, Res] private[gatling](requestName: Expression[String], method: MethodDescriptor[Req, Res]) {
     val f = { channel: Channel =>
       request: Req =>
-        guavaFuture2ScalaFuture(ClientCalls.futureUnaryCall(channel.newCall(method, CallOptions.DEFAULT), request))
+        guavaFuture2ScalaFuture(ClientCalls.futureUnaryCall(channel.newCall(method, CallOptions.DEFAULT.withDeadlineAfter(10, TimeUnit.SECONDS)), request))
     }
 
     def payload(req: Expression[Req]) = GrpcCallActionBuilder(requestName, f, req, headers = Nil)
